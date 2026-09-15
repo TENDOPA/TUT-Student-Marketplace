@@ -22,16 +22,8 @@ export default function EduTradeAssistant() {
   const scrollRef = useRef(null);
 
   useEffect(() => {
-    let active = true;
-    base44.auth.isAuthenticated().then(async (ok) => {
-      if (!ok) return;
-      try {
-        const me = await base44.auth.me();
-        if (active && me) setUser(me);
-      } catch { /* ignore */ }
-    });
-    return () => { active = false; };
-  }, []);
+  setUser(null);
+}, []);
 
   useEffect(() => {
     if (open && messages.length === 0) {
