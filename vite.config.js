@@ -5,6 +5,7 @@ import { defineConfig } from 'vite'
 
 // https://vite.dev/config/
 export default defineConfig({
+    base: "/TUT-Student-Marketplace/",
     resolve: {
     alias: [
       { find: "@/data", replacement: fileURLToPath(new URL("./src/components/data", import.meta.url)) },
