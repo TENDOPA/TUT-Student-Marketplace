@@ -5,7 +5,7 @@ import {
   Search, ArrowRight, ShieldCheck, Sparkles, TrendingUp, Star,
   Bot, Tag, AlertTriangle, Store, Quote, ChevronDown, Megaphone, Clock, Plus, Users
 } from "lucide-react";
-import MarketplaceNavbar from "@/components/MarketplaceNavbar";
+import MarketplaceNavBar from "@/components/MarketplaceNavBar";
 import MarketplaceFooter from "@/components/MarketplaceFooter";
 import EduTradeAssistant from "@/components/EduTradeAssisstant";
 import ProductCard from "@/components/ProductCard";
