@@ -18,6 +18,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      VITE_BASE44_APP_ID: "6a5e321117dbe8d30e2abff2"
+      VITE_BASE44_APP_BASE_URL: "https://tut-campus-connect.base44.app"
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
