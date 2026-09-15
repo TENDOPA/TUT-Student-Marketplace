@@ -1,5 +1,5 @@
 import MarketplaceNavBar from "@/components/MarketplaceNavBar";
-import MarketplaceFooter from "@/components/MarketplaceFooter";
+import MarketplaceFooter from "@/components/Marketplacefooter";
 
 export default function RevenueModel() {
   return (
