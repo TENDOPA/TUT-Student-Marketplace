@@ -1,4 +1,3 @@
-```javascript
 // Local demo data. The app runs entirely on this when Base44 is not
 // configured (the default) so the site is always fully functional out of
 // the box for the JGA presentation.
@@ -163,4 +162,3 @@ export const STATS = {
   successfulConnections: 1204,
   verifiedSellers: 640,
 };
-```
