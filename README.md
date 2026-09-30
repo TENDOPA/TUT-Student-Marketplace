@@ -1,77 +1,165 @@
-# Base44 Project
+# EduTrade — TUT Student Marketplace
 
-Use this repository to run and edit the app locally, then publish changes back through Base44.
+A marketplace prototype for TUT students and lecturers to buy, sell and connect
+over academic/student-related technology (laptops, phones, tablets, textbooks,
+study materials, calculators, and electronics/accessories). Built as a JGA
+group project.
 
-Any change pushed to the repo will also be reflected in the Base44 Builder.
+Stack: **React 18 + Vite + React Router (HashRouter)**, plain CSS — no UI
+framework, no backend required to run.
 
-## Prerequisites
+---
 
-1. Clone the repository using the project's Git URL.
-2. Navigate to the project directory.
-3. Install dependencies: `npm install`.
-4. Install the Base44 CLI: `npm install -g base44@latest`.
+## Why it's built this way (and how it avoids the old blank-page problem)
 
-See the [Base44 CLI docs](https://docs.base44.com/developers/references/cli/get-started/overview) if you want to run Base44 commands directly.
+- **HashRouter, not BrowserRouter.** GitHub Pages has no server rewrite
+  rules. A `BrowserRouter` link like `/marketplace` 404s on refresh because
+  GitHub's static server looks for a real `marketplace/index.html` file.
+  `HashRouter` keeps routing after `/#/`, which always resolves to
+  `index.html` first — refreshing or deep-linking any page works.
+- **`base: '/TUT-Student-Marketplace/'` in `vite.config.js`.** Matches the
+  repo name so every built asset path is correct under GitHub Pages'
+  sub-path hosting. If you rename the repo, update this one line.
+- **An `ErrorBoundary` wraps the whole app** (`src/components/ErrorBoundary.jsx`).
+  If any single page throws at runtime, you get a friendly "Back to Home"
+  screen instead of a blank white page — the rest of the app keeps working.
+- **The Base44/AI integration is isolated** in `src/lib/base44.js`. Every
+  call is wrapped so a missing config, a network error, or a 401/403 always
+  falls back to local demo data — it can never blank or crash the site.
+  Nothing else in the app imports Base44 directly.
+- **No page requires login to render.** Auth is mocked via `localStorage`
+  (`src/context/AuthContext.jsx`) purely for the demo; Dashboard/Profile/
+  Messages/Notifications show a "continue as demo student" prompt instead of
+  redirecting or blocking.
 
-## Run Locally
+---
 
-Run the full local development environment from the project root:
+## 1. What was created
 
-```bash
-base44 dev
+```
+TUT-Student-Marketplace/
+├── .github/workflows/deploy.yml   # GitHub Actions → builds & deploys to Pages
+├── src/
+│   ├── main.jsx                   # Entry point, HashRouter + ErrorBoundary
+│   ├── App.jsx                    # All routes
+│   ├── index.css                  # Design system (single global stylesheet)
+│   ├── context/AuthContext.jsx    # Mock auth (localStorage-based)
+│   ├── lib/base44.js              # Isolated backend client, safe fallback
+│   ├── lib/mockData.js            # Demo listings/categories/stats/FAQ
+│   ├── components/                # Navbar, Footer, ListingCard, AIAssistant, ErrorBoundary
+│   └── pages/                     # One file per route (20 pages)
+├── vite.config.js
+├── package.json
+└── .env.example
 ```
 
-`base44 dev` starts the local Base44 development backend and, when this app is configured for it, also starts the frontend dev server for you. Use the frontend URL printed by the command.
+All 20 routes requested are implemented and render without requiring login:
+`/`, `/login`, `/register`, `/forgot-password`, `/reset-password`,
+`/dashboard`, `/marketplace`, `/product/:id`, `/profile`, `/messages`,
+`/notifications`, `/accommodation`, `/services`, `/businesses`, `/schedule`,
+`/sell`, `/revenue`, `/admin`, `/about`, plus a catch-all 404 page.
 
-For example, when the Base44 project config includes a `serveCommand`, `base44 dev` can launch the frontend too:
+Every file was syntax-checked and every relative import verified to resolve
+(path + exact case) before delivery — see Limitations below for what that
+check does *not* cover.
 
-```json5
-{
-  "site": {
-    "serveCommand": "npm run dev"
-  }
-}
-```
-
-In a Base44 project this lives in `base44/config.jsonc`.
-
-## Run Only The Frontend
-
-If you only want to work on the frontend against the hosted Base44 backend, run:
+## 2. How to run it locally
 
 ```bash
+npm install
 npm run dev
 ```
 
-Open the local URL printed by Vite.
-
-## Use The Hosted Backend
-
-For frontend-only development, create or update `.env.local` in the project root:
+Open the local URL Vite prints (usually `http://localhost:5173`). To test a
+production build locally:
 
 ```bash
-VITE_BASE44_APP_ID=your_app_id
-VITE_BASE44_APP_BASE_URL=https://your-app.base44.app
+npm run build
+npm run preview
 ```
 
-`VITE_BASE44_APP_ID` identifies the Base44 app.
+## 3. How to connect/sync it with GitHub
 
-`VITE_BASE44_APP_BASE_URL` tells the Base44 Vite plugin where to send local `/api` requests. Point it at your deployed Base44 app URL when you want the local frontend to use the hosted backend.
+I don't have network access in this environment, so I can't push to GitHub
+for you — here's exactly how to do it.
 
-When you use `base44 dev`, the command injects the local Base44 values for you, so `.env.local` is mainly needed for frontend-only workflows.
-
-## Publish Your Changes
-
-After pushing your changes to git, open the Base44 dashboard and publish the app:
+**If `TENDOPA/TUT-Student-Marketplace` doesn't exist yet, or you're fine
+replacing its contents:**
 
 ```bash
-base44 dashboard open
+cd TUT-Student-Marketplace
+git init
+git add .
+git commit -m "Rebuild: EduTrade marketplace (Vite + React + HashRouter)"
+git branch -M main
+git remote add origin https://github.com/TENDOPA/TUT-Student-Marketplace.git
+git push -u origin main --force
 ```
 
-## Docs & Support
+Only use `--force` if you're deliberately replacing what's there now — it
+overwrites the remote history.
 
-Documentation: [https://docs.base44.com/Integrations/Using-GitHub](https://docs.base44.com/Integrations/Using-GitHub)
+**If you want to keep the existing repo untouched and compare first**, push
+to a new branch instead:
 
-Base44 CLI command reference: [https://docs.base44.com/developers/references/cli/commands/introduction](https://docs.base44.com/developers/references/cli/commands/introduction)
+```bash
+cd TUT-Student-Marketplace
+git init
+git add .
+git commit -m "Rebuild: EduTrade marketplace (Vite + React + HashRouter)"
+git remote add origin https://github.com/TENDOPA/TUT-Student-Marketplace.git
+git fetch origin
+git checkout -b rebuild-vite-react
+git push -u origin rebuild-vite-react
+```
 
-Support: [https://app.base44.com/support](https://app.base44.com/support)
+Then open a Pull Request on GitHub from `rebuild-vite-react` into `main` so
+you can review the diff before merging — nothing on `main` changes until you
+merge it.
+
+## 4. How to deploy it
+
+The included workflow (`.github/workflows/deploy.yml`) builds and deploys to
+GitHub Pages automatically on every push to `main`. One-time setup on GitHub:
+
+1. Push the code (step 3 above).
+2. In the repo: **Settings → Pages → Source → GitHub Actions**.
+3. Push to `main` (or re-run the workflow from the **Actions** tab) — it
+   builds with `npm ci && npm run build` and deploys the `dist/` folder.
+
+No secrets are required to deploy — the app runs fully on demo data out of
+the box. The `VITE_BASE44_APP_ID` / `VITE_BASE44_API_URL` build args are only
+used if you later add those as repo secrets (**Settings → Secrets and
+variables → Actions**) to wire up a real Base44 backend.
+
+## 5. Final GitHub Pages URL structure
+
+```
+https://tendopa.github.io/TUT-Student-Marketplace/#/
+https://tendopa.github.io/TUT-Student-Marketplace/#/marketplace
+https://tendopa.github.io/TUT-Student-Marketplace/#/product/1
+https://tendopa.github.io/TUT-Student-Marketplace/#/sell
+...etc for every route
+```
+
+The `#/` is expected and correct — that's HashRouter, and it's what makes
+refresh and direct links reliable on GitHub Pages.
+
+## 6. Remaining limitations
+
+- **I could not run `npm install` / `npm run build` myself** — this sandbox
+  has no network access, so npm can't reach its registry. I syntax-checked
+  every file with esbuild and verified every import resolves to a real file
+  with matching case (the two most common causes of a blank Pages build),
+  but a real `npm run build` on your machine or in the Actions workflow is
+  the first true end-to-end test. If it fails, send me the exact error and
+  I'll fix it.
+- **I could not push to GitHub or create the Actions run myself** — same
+  reason, no network access from here. Use the commands in section 3.
+- **Base44 is not actually wired up** — `src/lib/base44.js` is a working,
+  safe client shell, but without your real `VITE_BASE44_APP_ID` /
+  `VITE_BASE44_API_URL` it always runs in local demo-data mode (which is
+  also the safe default for presenting this project).
+- **Auth, messages, notifications and the admin dashboard are mock/local
+  only** — no real database, matching the brief's "demo/mock authentication
+  is acceptable" allowance.

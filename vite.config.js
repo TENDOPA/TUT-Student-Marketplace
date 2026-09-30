@@ -1,28 +1,14 @@
-import { fileURLToPath, URL } from "node:url"
-import base44 from "@base44/vite-plugin"
-import react from '@vitejs/plugin-react'
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
-// https://vite.dev/config/
+// GitHub Pages serves this app from https://<user>.github.io/TUT-Student-Marketplace/
+// so every asset URL must be prefixed with that sub-path. Vite's `base` option
+// handles this automatically for anything built with it (JS, CSS, images).
+// If you ever rename the repo, update this to match: '/<new-repo-name>/'
 export default defineConfig({
-    base: "/TUT-Student-Marketplace/",
-    resolve: {
-    alias: [
-      { find: "@/data", replacement: fileURLToPath(new URL("./src/components/data", import.meta.url)) },
-      { find: "@/lib", replacement: fileURLToPath(new URL("./src/components/lib", import.meta.url)) },
-      { find: "@", replacement: fileURLToPath(new URL("./src", import.meta.url)) },
-    ],
+  plugins: [react()],
+  base: '/TUT-Student-Marketplace/',
+  build: {
+    outDir: 'dist',
   },
-  plugins: [
-    base44({
-      // Support for legacy code that imports the base44 SDK with @/integrations, @/entities, etc.
-      // can be removed if the code has been updated to use the new SDK imports from @base44/sdk
-      legacySDKImports: process.env.BASE44_LEGACY_SDK_IMPORTS === 'true',
-      hmrNotifier: true,
-      navigationNotifier: true,
-      analyticsTracker: true,
-      visualEditAgent: true
-    }),
-    react(),
-  ]
 });
