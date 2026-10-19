@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { CATEGORIES, LISTINGS, STATS } from '../lib/mockData.js';
+import { CATEGORIES, LISTINGS } from '../lib/mockData.js';
 import ListingCard from '../components/ListingCard.jsx';
 
 export default function Home() {
@@ -90,21 +90,6 @@ export default function Home() {
           <div className="card"><h4>TUT-only marketplace</h4><p style={{ color: 'var(--muted)', fontSize: '0.86rem', marginTop: 8 }}>Every account is tied to a TUT student or staff email.</p></div>
           <div className="card"><h4>Verified users &amp; ratings</h4><p style={{ color: 'var(--muted)', fontSize: '0.86rem', marginTop: 8 }}>Sellers build a rating history from real transactions.</p></div>
           <div className="card"><h4>Report &amp; secure chat</h4><p style={{ color: 'var(--muted)', fontSize: '0.86rem', marginTop: 8 }}>Report a listing anytime, and message without sharing personal numbers.</p></div>
-        </div>
-      </section>
-
-      {/* STATS */}
-      <section className="section">
-        <div className="section-head">
-          <div className="eyebrow">EduTrade in numbers</div>
-          <h2 className="page-title" style={{ fontSize: '1.8rem' }}>Demo project statistics</h2>
-          <p className="demo-note">These are demo figures for presentation purposes — not live backend data.</p>
-        </div>
-        <div className="grid grid-4">
-          <div className="card stat-card"><div className="stat-num">{STATS.activeStudents.toLocaleString()}</div><div className="stat-label">Active students</div></div>
-          <div className="card stat-card"><div className="stat-num">{STATS.listings.toLocaleString()}</div><div className="stat-label">Listings</div></div>
-          <div className="card stat-card"><div className="stat-num">{STATS.successfulConnections.toLocaleString()}</div><div className="stat-label">Successful connections</div></div>
-          <div className="card stat-card"><div className="stat-num">{STATS.verifiedSellers.toLocaleString()}</div><div className="stat-label">Verified sellers</div></div>
         </div>
       </section>
 
